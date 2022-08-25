@@ -1,46 +1,29 @@
 #!/usr/bin/python3
-""" prime game """
-
-
-def isPrime(x):
-    """ checks if a number is prime """
-    for i in range(2, x):
-        if x % i == 0:
-            return False
-    return True
+"""Prime game"""
 
 
 def isWinner(x, nums):
-    """ prime game """
-    if x < 1 or not nums or nums == []:
+    """match b/n Maria and Ben"""
+    if x < 1 or not nums:
         return None
-    r = min(x, len(nums))
-    Maria = 0
-    Ben = 0
-    player = 0
-    for r_i in range(r):
-        if nums[r_i] < 2:
-            Ben += 1
-        elif nums[r_i] == 2:
-            Maria += 1
-        else:
-            player = True
-            prime_exist = 1
-            n = list(range(2, nums[r_i] + 1))
-            while (prime_exist):
-                prime_exist = 0
-                for i in n:
-                    if (isPrime(i)):
-                        prime_exist = 1
-                        player = not player
-                        n = list(filter(lambda x: x % i != 0, n))
-            if (player):
-                Ben += 1
-            else:
-                Maria += 1
+    Ben, Maria = 0, 0
 
-    if Maria > Ben:
+    n = max(nums)
+    primes = [True for _ in range(1, n + 1, 1)]
+    primes[0] = False
+    for i, is_prime in enumerate(primes, 1):
+        if i == 1 or not is_prime:
+            continue
+        for j in range(i + i, n + 1, i):
+            primes[j - 1] = False
+
+    for _, n in zip(range(x), nums):
+        primes_count = len(list(filter(lambda x: x, primes[0: n])))
+        Ben += primes_count % 2 == 0
+        Maria += primes_count % 2 == 1
+    if Ben == Maria:
+        return None
+    if Ben < Maria:
         return 'Maria'
-    elif Ben > Maria:
+    else:
         return 'Ben'
-    return None
